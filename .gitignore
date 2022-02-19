@@ -1,0 +1,22 @@
+# Binaries
+**/bin/
+!thirdparty/premake/bin/
+bin-int/
+build/
+build.zip
+
+# Victoria files
+*.log
+*.json
+*.ini
+
+# Visual Studio files and folder
+.vs/
+.vscode/
+.VSCodeCounter/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+thirdparty/termcolor/
