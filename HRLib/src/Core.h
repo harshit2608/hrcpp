@@ -5,7 +5,7 @@
         #define HRCPP_API __declspec(dllexport)
     #else
         #define HRCPP_API __declspec(dllimport)
-#endif
+    #endif
 #else
     #error LOADER only supports Windows!
 #endif

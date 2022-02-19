@@ -3,7 +3,7 @@
 
 void LogTest(int n)
 {
-    //hrcpp::hrlogger::Logger::Info("%d", n);
+    // hrcpp::hrlogger::Logger::Info("%d", n);
     HR_INFO("%d", n)
     for (int i = 0; i < 1000; ++i)
     {
@@ -11,7 +11,7 @@ void LogTest(int n)
     }
     for (int i = 0; i < 100; ++i)
     {
-        hrcpp::hrlogger::Logger::Warn("hey %d %d", n ,i);
+        // hrcpp::hrlogger::Logger::Warn("hey %d %d", n ,i);
         HR_WARN("hey %d %d", n, i)
     }
 }
@@ -31,6 +31,5 @@ int main()
     {
         threads[i].join();
     }
-    hrcpp::hrlogger::Logger::CloseFileOutput();
     return 0;
 }
