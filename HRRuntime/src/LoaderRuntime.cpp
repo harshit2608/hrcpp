@@ -1,4 +1,4 @@
-#include <HotReloader.h>
+#include <hrlib.h>
 #include <iostream>
 
 void LogTest(int n)
@@ -18,18 +18,31 @@ void LogTest(int n)
 
 int main()
 {
-    hrcpp::Foo foo;
-    std::cout << "The answer is : " << foo.GetAnswer() << std::endl;
-
     hrcpp::hrlogger::Logger::EnableFileOutput();
-    std::thread threads[10];
-    for (int i = 0; i < 10; ++i)
+    hrcpp::HotReloader reloader;
+
+    reloader.addSourceDirectory("./src", true);
+
+    HR_TRACE("Test")
+    HR_INFO("Test")
+    HR_WARN("Test")
+    HR_ERROR("Test")
+    HR_CRITICAL("Test")
+    HR_TRACE("Test")
+
+    while (true)
     {
-        threads[i] = std::thread(LogTest, i);
+        reloader.update();
     }
-    for (int i = 0; i < 10; ++i)
-    {
-        threads[i].join();
-    }
+    // std::thread threads[10];
+    // for (int i = 0; i < 10; ++i)
+    //{
+    //     threads[i] = std::thread(LogTest, i);
+    // }
+    // for (int i = 0; i < 10; ++i)
+    //{
+    //     threads[i].join();
+    // }
+
     return 0;
 }

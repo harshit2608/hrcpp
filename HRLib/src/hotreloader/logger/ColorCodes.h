@@ -1,0 +1,33 @@
+#pragma once
+
+#define Black "\u001b[30m"
+#define Red "\u001b[31m"
+#define Green "\u001b[32m"
+#define Yellow "\u001b[33m"
+#define Blue "\u001b[34m"
+#define Magenta "\u001b[35m"
+#define Cyan "\u001b[36m"
+#define White "\u001b[37m"
+
+#define Reset "\u001b[0m"
+
+#define Bold "\u001b[1m"
+#define Underline "\u001b[4m"
+#define Reversed "\u001b[7m"
+
+#define BackgroundBlack "\u001b[40m"
+#define BackgroundRed "\u001b[41m"
+#define BackgroundGreen "\u001b[42m"
+#define BackgroundYellow "\u001b[43m"
+#define BackgroundBlue "\u001b[44m"
+#define BackgroundMagenta "\u001b[45m"
+#define BackgroundCyan "\u001b[46m"
+#define BackgroundWhite "\u001b[47m"
+#define BackgroundBrightBlack "\u001b[40; 1m"
+#define BackgroundBrightRed "\u001b[41; 1m"
+#define BackgroundBrightGreen "\u001b[42; 1m"
+#define BackgroundBrightYellow "\u001b[43; 1m"
+#define BackgroundBrightBlue "\u001b[44; 1m"
+#define BackgroundBrightMagenta "\u001b[45; 1m"
+#define BackgroundBrightCyan "\u001b[46; 1m"
+#define BackgroundBrightWhite "\u001b[47; 1m"
