@@ -21,14 +21,7 @@ int main()
     hrcpp::hrlogger::Logger::EnableFileOutput();
     hrcpp::HotReloader reloader;
 
-    reloader.addSourceDirectory("./src", true);
-
-    HR_TRACE("Test")
-    HR_INFO("Test")
-    HR_WARN("Test")
-    HR_ERROR("Test")
-    HR_CRITICAL("Test")
-    HR_TRACE("Test")
+    reloader.addSourceDirectory("src", true);
 
     while (true)
     {

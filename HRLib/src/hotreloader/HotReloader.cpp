@@ -5,6 +5,7 @@
 namespace hrcpp
 {
     Scope<FileWatcher> HotReloader::m_FileWatcher = FileWatcher::Create();
+
     void HotReloader::addSourceDirectory(const std::filesystem::path &directory, bool recursiveSearch)
     {
         // std::cout << directory;
@@ -22,5 +23,10 @@ namespace hrcpp
     void HotReloader::update()
     {
         m_FileWatcher->PollEvents();
+    }
+
+    HotReloader::~HotReloader()
+    {
+        m_FileWatcher->RemoveAllWatch();
     }
 }

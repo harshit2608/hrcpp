@@ -10,6 +10,7 @@ namespace hrcpp
     class HRCPP_API HotReloader
     {
     public:
+        ~HotReloader();
         void addSourceDirectory(const std::filesystem::path &directory, bool recursiveSearch = true);
         void addIncludeDirectory(const std::filesystem::path &directory);
 
