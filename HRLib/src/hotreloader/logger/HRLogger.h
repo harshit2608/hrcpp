@@ -110,14 +110,12 @@ namespace hrcpp
 
                     if (file)
                     {
-                        fprintf(file, color);
                         fprintf(file, "[%s]", buffer);
                         fprintf(file, "[HRCPP]");
                         fprintf(file, messagePriorityStr);
                         fprintf(file, message, args...);
                         fprintf(file, " on line %d in %s ", line, sourceFile);
                         fprintf(file, "\n");
-                        fprintf(file, Reset);
                     }
                 }
             }

@@ -15,12 +15,14 @@ project "HRRuntime"
 
 	includedirs
 	{
-        "%{wks.location}/HRLib/src"
+        "%{wks.location}/HRLib/src",
+        "%{wks.location}/HRTest/src"
 	}
 
 	links
 	{
-		"HRLib"
+		"HRLib",
+        "HRTest"
 	}
 
 	filter "system:windows"
@@ -28,7 +30,8 @@ project "HRRuntime"
 
 		defines
 		{
-            "HR_PLATFORM_WINDOWS"
+            "HR_PLATFORM_WINDOWS",
+            "HRT_PLATFORM_WINDOWS"
 		}
 
 	filter "configurations:Debug"

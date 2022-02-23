@@ -1,15 +1,21 @@
 #include "platform/windows/FileWatcherWindows.h"
 
 #include <iostream>
+#include <assert.h>
 
 namespace hrcpp
 {
-    bool FileWatcherWindows::AddWatch(const std::filesystem::path &directoryPath)
+    FileWatcherWindows::~FileWatcherWindows()
+    {
+        RemoveAllWatch();
+    }
+
+    bool FileWatcherWindows::AddWatch(const std::filesystem::path &directoryPath,bool recursive)
     {
         //for (const auto& file : std::filesystem::directory_iterator(directoryPath))
         //{
-        //    std::string temp = file.path().string();
-        //    HR_TRACE(file.path().string().c_str())
+        //     std::string temp = file.path().string();
+        //     HR_TRACE(file.path().string().c_str())
         //}
 
         auto p_Watch = CreateScope<DirectoryWatcher>();
@@ -23,15 +29,13 @@ namespace hrcpp
             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
             NULL);
 
-        //HR_INFO(directoryPath.string().c_str());
-        //std::cout << &h_Directory;
-
         if (h_Directory == INVALID_HANDLE_VALUE)
         {
             HR_ERROR("Failed to add directory %s to watcher", directoryPath);
             return false;
         }
 
+        p_Watch->bRecursive = recursive;
         p_Watch->m_DirectoryPath = directoryPath;
         p_Watch->h_Directory = h_Directory;
         p_Watch->p_FileWatcher = this;
@@ -41,7 +45,7 @@ namespace hrcpp
             HR_ERROR("Failed to call ReadDirectoryChangesAsync from %s", __FUNCTION__);
             return false;
         }
-        
+
         m_DirectoryHandles.push_back(h_Directory);
         m_Watchers.push_back(std::move(p_Watch));
         return true;
@@ -52,9 +56,12 @@ namespace hrcpp
         return true;
     }
 
-    bool FileWatcherWindows::RemoveAllWatch()
+    void FileWatcherWindows::RemoveAllWatch()
     {
-        return true;
+        for (const auto& it : m_Watchers)
+        {
+
+        }
     }
 
     void FileWatcherWindows::PollEvents()
@@ -67,10 +74,10 @@ namespace hrcpp
         if (dwErrorCode != ERROR_SUCCESS)
         {
             HR_ERROR("ReadDirectoryChangesAsync Failed %s", __func__)
-                return;
+            return;
         }
 
-        DirectoryWatcher* p_Watch = reinterpret_cast<DirectoryWatcher*>(lpOverlapped);
+        DirectoryWatcher *p_Watch = reinterpret_cast<DirectoryWatcher *>(lpOverlapped);
 
         FILE_NOTIFY_INFORMATION *p_Notify = nullptr;
         char filenameBuf[MAX_PATH];
@@ -78,7 +85,7 @@ namespace hrcpp
         size_t offset = 0;
         do
         {
-            p_Notify = reinterpret_cast<FILE_NOTIFY_INFORMATION*>(&p_Watch->buffer[offset]);
+            p_Notify = reinterpret_cast<FILE_NOTIFY_INFORMATION *>(&p_Watch->buffer[offset]);
             offset += p_Notify->NextEntryOffset;
 
             int size = WideCharToMultiByte(
@@ -96,22 +103,19 @@ namespace hrcpp
             switch (p_Notify->Action)
             {
             case FILE_ACTION_ADDED:
-                HR_INFO("The file is added to the directory: [%s]", filenameBuf);
-                break;
-            case FILE_ACTION_REMOVED:
-                HR_INFO("The file is removed from the directory: [%s]", filenameBuf);
+            case FILE_ACTION_RENAMED_NEW_NAME:
+                HR_INFO("Renamed or created: [%s]", filenameBuf);
                 break;
             case FILE_ACTION_MODIFIED:
-                HR_INFO("The file is modified. This can be a change in the time stamp or attributes: [%s]", filenameBuf);
+                HR_TRACE("Modified: [%s]", filenameBuf);
                 break;
             case FILE_ACTION_RENAMED_OLD_NAME:
-                HR_INFO("The file was renamed and this is the old name: [%s]", filenameBuf);
-                break;
-            case FILE_ACTION_RENAMED_NEW_NAME:
-                HR_INFO("The file was renamed and this is the new name: [%s]", filenameBuf);
+            case FILE_ACTION_REMOVED:
+                HR_WARN("Renamed or removed: [%s]", filenameBuf);
                 break;
             default:
                 HR_WARN("Default error.");
+                assert(FALSE);
                 break;
             }
 
@@ -124,17 +128,17 @@ namespace hrcpp
         }
     }
 
-    bool FileWatcherWindows::ReadDirectoryChangesAsync(DirectoryWatcher* pWatch)
+    bool FileWatcherWindows::ReadDirectoryChangesAsync(DirectoryWatcher *pWatch)
     {
-        //pWatch->overlap = {};
+        pWatch->overlap = {};
         return ReadDirectoryChangesW(
-            pWatch->h_Directory,
-            pWatch->buffer,
-            sizeof(pWatch->buffer),
-            false,
-            FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_DIR_NAME,
-            nullptr,
-            &pWatch->overlap,
-            LpoverlappedCompletionRoutine) != 0;
+                   pWatch->h_Directory,
+                   pWatch->buffer,
+                   sizeof(pWatch->buffer),
+                   pWatch->bRecursive,
+                   FILE_NOTIFY_CHANGE_FILE_NAME | FILE_NOTIFY_CHANGE_CREATION | FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_SIZE | FILE_NOTIFY_CHANGE_DIR_NAME,
+                   nullptr,
+                   &pWatch->overlap,
+                   LpoverlappedCompletionRoutine) != 0;
     }
 }

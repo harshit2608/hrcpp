@@ -1,4 +1,5 @@
 #include <hrlib.h>
+#include <LoaderTest.h>
 #include <iostream>
 
 void LogTest(int n)
@@ -22,7 +23,9 @@ int main()
     hrcpp::HotReloader reloader;
 
     reloader.addSourceDirectory("src", true);
+    reloader.addSourceDirectory("F://VICTORIA ORGANIZATION//Reloader//HRTest//src");
 
+    foo();
     while (true)
     {
         reloader.update();
